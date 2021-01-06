@@ -25,6 +25,10 @@ do
     APACHE_PID_FILE=${ABS_ROOT}/httpd.pid \
     PHP7_MODULE_PATH=${PHP7_MODULE_PATH} \
     PHP_INCLUDE_PATH=${PHP_INCLUDE_PATH} \
+    XDEBUG=${XDEBUG} \
+    XDEBUG_REMOTE_HOST=${XDEBUG_REMOTE_HOST} \
+    XDEBUG_REMOTE_PORT=${XDEBUG_REMOTE_PORT} \
+    XDEBUG_IDEKEY=${XDEBUG_IDEKEY} \
     httpd -f ${ABS_ROOT}/etc/httpd.conf -DFOREGROUND | perl ./etc/apache-logfilter.pl
   echo "... Respawning httpd in foreground ..."
 done
