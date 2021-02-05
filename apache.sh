@@ -11,6 +11,12 @@ cd $(dirname $0)
 # ========================================================
 ABS_DOCUMENT_ROOT=$(cd ${DOCUMENT_ROOT} && pwd)
 ABS_ROOT=$(pwd)
+# ========================================================
+APACHE_PID_FILE=${ABS_ROOT}/httpd.pid
+APACHE_IGNORE_REBOOT=${ABS_ROOT}/__stop_httpd__
+# ========================================================
+
+/bin/rm $APACHE_IGNORE_REBOOT
 
 trap 'echo "Received SIGTERM"; echo "!!! If you want to stop httpd, press CTRL + C in succession."; sleep 1' 15
 
@@ -34,5 +40,11 @@ do
     XDEBUG3_CLIENT_PORT=${XDEBUG3_CLIENT_PORT} \
     XDEBUG3_IDEKEY=${XDEBUG3_IDEKEY} \
     httpd -f ${ABS_ROOT}/etc/httpd.conf -DFOREGROUND | perl ./etc/apache-logfilter.pl
+  if [ -f $APACHE_IGNORE_REBOOT ]
+  then
+	/bin/rm $APACHE_IGNORE_REBOOT
+    break
+  fi
+
   echo "... Respawning httpd in foreground ..."
 done
