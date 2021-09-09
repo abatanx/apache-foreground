@@ -20,12 +20,12 @@ ctrl + c で終了.
 ポートを指定(80はsuじゃないと使えないので注意)
 * **DOCUMENT_ROOT**  
 ドキュメントルートのパスを記述(相対パスのときは `apache.sh` からの位置)
-* **PHP7_MODULE_PATH**  
+* **PHP_MODULE_PATH**  
 PHPのモジュールのパスを記載
 * **PHP_INCLUDE_PATH**  
 起動時に読み込むPHPのパスを記載(php の `include_path` の値と同様の形式)
 * **XDEBUG**  
-on / off を指定してください
+2 / 3 を指定してください
 * **XDEBUG_REMOTE_HOST**  
 PHPからのXdebug接続リモートホストアドレス(いわゆるXdebug対応のIDEを起動しているPC)を指定してください。だいたい localhost とか、127.0.0.1 じゃないですかね。
 * **XDEBUG_REMOTE_PORT**  
