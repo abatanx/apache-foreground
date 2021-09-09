@@ -1,9 +1,10 @@
 #!/bin/sh
-# =======================================================================
-#  Standalone HTTPd + PHP7.x + Xdebug on foreground process for HomeBrew
-# =======================================================================
+# ===========================================================================
+#  Standalone HTTPd + PHP7.4/8.0 + Xdebug on foreground process for HomeBrew
+# ===========================================================================
 # brew install apache
 # brew install php@7.4
+# brew install php@8.0
 # pecl install xdebug
 # ========================================================
 
@@ -17,6 +18,11 @@ ABS_ROOT=$(pwd)
 APACHE_PID_FILE=${ABS_ROOT}/httpd.pid
 APACHE_IGNORE_REBOOT=${ABS_ROOT}/__stop_httpd__
 # ========================================================
+HTTPD_ENV=""
+if [ "$XDEBUG" = "3" ]
+then
+  HTTPD_ENV="XDEBUG_MODE=debug"
+fi
 
 /bin/rm $APACHE_IGNORE_REBOOT
 
@@ -31,16 +37,15 @@ do
     APACHE_DOCUMENT_ROOT=${ABS_DOCUMENT_ROOT} \
     APACHE_SCRIPT_ROOT=${ABS_ROOT} \
     APACHE_PID_FILE=${ABS_ROOT}/httpd.pid \
-    PHP7_MODULE_PATH=${PHP7_MODULE_PATH} \
+    PHP_MODULE_PATH=${PHP_MODULE_PATH} \
     PHP_INCLUDE_PATH=${PHP_INCLUDE_PATH} \
-    XDEBUG2=${XDEBUG2} \
-    XDEBUG2_REMOTE_HOST=${XDEBUG2_REMOTE_HOST} \
-    XDEBUG2_REMOTE_PORT=${XDEBUG2_REMOTE_PORT} \
-    XDEBUG2_IDEKEY=${XDEBUG2_IDEKEY} \
-    XDEBUG3=${XDEBUG3} \
-    XDEBUG3_CLIENT_HOST=${XDEBUG3_CLIENT_HOST} \
-    XDEBUG3_CLIENT_PORT=${XDEBUG3_CLIENT_PORT} \
-    XDEBUG3_IDEKEY=${XDEBUG3_IDEKEY} \
+    PHP_APACHE_MODULE_KEY=${PHP_APACHE_MODULE_KEY} \
+    PHP_INI_SCAN_DIR=${ABS_ROOT}:php \
+    XDEBUG=${XDEBUG} \
+    XDEBUG_REMOTE_HOST=${XDEBUG_REMOTE_HOST} \
+    XDEBUG_REMOTE_PORT=${XDEBUG_REMOTE_PORT} \
+    XDEBUG_IDEKEY=${XDEBUG_IDEKEY} \
+    $HTTPD_ENV \
     httpd -f ${ABS_ROOT}/etc/httpd.conf -DFOREGROUND | perl ./etc/apache-logfilter.pl
   if [ -f $APACHE_IGNORE_REBOOT ]
   then
