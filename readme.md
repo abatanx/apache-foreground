@@ -17,7 +17,7 @@ ctrl + c で終了.
 * **SERVER_NAME**  
 ローカルホストのIPやテストドメインなど設定
 * **SERVER_PORT**  
-ポートを指定(80はsuじゃないと使えないので注意)
+ポートを指定(Wellknown Port の場合は、当然 root 必要です。)
 * **DOCUMENT_ROOT**  
 ドキュメントルートのパスを記述(相対パスのときは `apache.sh` からの位置)
 * **PHP_MODULE_PATH**  
