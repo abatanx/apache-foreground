@@ -16,7 +16,7 @@ ABS_DOCUMENT_ROOT=$(cd ${DOCUMENT_ROOT} && pwd)
 ABS_ROOT=$(pwd)
 # ========================================================
 APACHE_PID_FILE=${ABS_ROOT}/httpd.pid
-APACHE_IGNORE_REBOOT=${ABS_ROOT}/__stop_httpd__
+APACHE_SIGWINCH=${ABS_ROOT}/__sig_winch__
 # ========================================================
 HTTPD_ENV=""
 if [ "$XDEBUG" = "3" ]
@@ -24,19 +24,21 @@ then
   HTTPD_ENV="XDEBUG_MODE=debug"
 fi
 
-/bin/rm $APACHE_IGNORE_REBOOT
+touch   $APACHE_SIGWINCH
 
-trap 'echo "Received SIGTERM"; echo "!!! If you want to stop httpd, press CTRL + C in succession."; sleep 1' 15
+trap 'echo "... Received SIGTERM";' 15
+trap 'echo "... Received SIGWINCH"; touch $APACHE_SIGWINCH' 28
 
-echo "... Spawning httpd in foreground ..."
-while true
+while [ -f $APACHE_SIGWINCH ]
 do
+  echo "... Spawning httpd in foreground ..."
+  rm $APACHE_SIGWINCH
   env \
     APACHE_SERVER_PORT=${SERVER_PORT} \
     APACHE_SERVER_NAME=${SERVER_NAME} \
     APACHE_DOCUMENT_ROOT=${ABS_DOCUMENT_ROOT} \
     APACHE_SCRIPT_ROOT=${ABS_ROOT} \
-    APACHE_PID_FILE=${ABS_ROOT}/httpd.pid \
+    APACHE_PID_FILE=${APACHE_PID_FILE} \
     PHP_MODULE_PATH=${PHP_MODULE_PATH} \
     PHP_APACHE_MODULE_KEY=${PHP_APACHE_MODULE_KEY} \
     XDEBUG=${XDEBUG} \
@@ -45,11 +47,4 @@ do
     XDEBUG_IDEKEY=${XDEBUG_IDEKEY} \
     $HTTPD_ENV \
     httpd -f ${ABS_ROOT}/etc/httpd.conf -DFOREGROUND | perl ./etc/apache-logfilter.pl
-  if [ -f $APACHE_IGNORE_REBOOT ]
-  then
-	/bin/rm $APACHE_IGNORE_REBOOT
-    break
-  fi
-
-  echo "... Respawning httpd in foreground ..."
 done
