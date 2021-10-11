@@ -24,7 +24,7 @@ then
   HTTPD_ENV="XDEBUG_MODE=debug"
 fi
 
-touch   $APACHE_SIGWINCH
+touch $APACHE_SIGWINCH
 
 trap 'echo "... Received SIGTERM";' 15
 trap 'echo "... Received SIGWINCH"; touch $APACHE_SIGWINCH' 28
@@ -33,6 +33,25 @@ while [ -f $APACHE_SIGWINCH ]
 do
   echo "... Spawning httpd in foreground ..."
   rm $APACHE_SIGWINCH
+
+  echo "..."
+  echo "${ABS_ROOT}/etc/httpd.conf"
+  echo ""
+  echo "APACHE_SERVER_PORT     = ${SERVER_PORT}"
+  echo "APACHE_SERVER_NAME     = ${SERVER_NAME}"
+  echo "APACHE_DOCUMENT_ROOT   = ${ABS_DOCUMENT_ROOT}"
+  echo "APACHE_SCRIPT_ROOT     = ${ABS_ROOT}"
+  echo "APACHE_PID_FILE        = ${APACHE_PID_FILE}"
+  echo "PHP_MODULE_PATH        = ${PHP_MODULE_PATH}"
+  echo "PHP_APACHE_MODULE_KEY  = ${PHP_APACHE_MODULE_KEY}"
+  echo "XDEBUG                 = ${XDEBUG}"
+  echo "XDEBUG_REMOTE_HOST     = ${XDEBUG_REMOTE_HOST}"
+  echo "XDEBUG_REMOTE_PORT     = ${XDEBUG_REMOTE_PORT}"
+  echo "XDEBUG_IDEKEY          = ${XDEBUG_IDEKEY}"
+  echo ""
+  echo $HTTPD_ENV
+  echo "..."
+
   env \
     APACHE_SERVER_PORT=${SERVER_PORT} \
     APACHE_SERVER_NAME=${SERVER_NAME} \
