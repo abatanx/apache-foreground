@@ -19,8 +19,7 @@ APACHE_PID_FILE=${ABS_ROOT}/httpd.pid
 APACHE_SIGWINCH=${ABS_ROOT}/__sig_winch__
 # ========================================================
 HTTPD_ENV=""
-if [ "$XDEBUG" = "3" ]
-then
+if [ "$XDEBUG" = "3" ]; then
   HTTPD_ENV="XDEBUG_MODE=debug"
 fi
 
@@ -29,13 +28,22 @@ touch $APACHE_SIGWINCH
 trap 'echo "... Received SIGTERM";' 15
 trap 'echo "... Received SIGWINCH"; touch $APACHE_SIGWINCH' 28
 
-while [ -f $APACHE_SIGWINCH ]
-do
+while [ -f $APACHE_SIGWINCH ]; do
   echo "... Spawning httpd in foreground ..."
   rm $APACHE_SIGWINCH
 
-  echo "..."
-  echo "${ABS_ROOT}/etc/httpd.conf"
+  if [ "${SERVER_PORT}" = "443" ]; then
+    URL="https://${SERVER_NAME}/"
+  elif [ "${SERVER_PORT}" = "80" ]; then
+    URL="http://${SERVER_NAME}/"
+  else
+    URL="http://${SERVER_NAME}:${SERVER_PORT}/"
+  fi
+
+  echo ""
+  echo "  $URL"
+  echo ""
+  echo "  ${ABS_ROOT}/etc/httpd.conf"
   echo ""
   echo "APACHE_SERVER_PORT     = ${SERVER_PORT}"
   echo "APACHE_SERVER_NAME     = ${SERVER_NAME}"
