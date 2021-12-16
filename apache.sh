@@ -40,11 +40,16 @@ while [ -f $APACHE_SIGWINCH ]; do
     URL="http://${SERVER_NAME}:${SERVER_PORT}/"
   fi
 
+  if [ "${SERVER_IP}" = "" ]; then
+    SERVER_IP=$SERVER_NAME
+  fi
+
   echo ""
   echo "  $URL"
   echo ""
   echo "  ${ABS_ROOT}/etc/httpd.conf"
   echo ""
+  echo "APACHE_SERVER_IP       = ${SERVER_IP}"
   echo "APACHE_SERVER_PORT     = ${SERVER_PORT}"
   echo "APACHE_SERVER_NAME     = ${SERVER_NAME}"
   echo "APACHE_DOCUMENT_ROOT   = ${ABS_DOCUMENT_ROOT}"
@@ -61,6 +66,7 @@ while [ -f $APACHE_SIGWINCH ]; do
   echo "..."
 
   env \
+    APACHE_SERVER_IP=${SERVER_IP} \
     APACHE_SERVER_PORT=${SERVER_PORT} \
     APACHE_SERVER_NAME=${SERVER_NAME} \
     APACHE_DOCUMENT_ROOT=${ABS_DOCUMENT_ROOT} \
