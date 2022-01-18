@@ -79,5 +79,5 @@ while [ -f $APACHE_SIGWINCH ]; do
     XDEBUG_REMOTE_PORT=${XDEBUG_REMOTE_PORT} \
     XDEBUG_IDEKEY=${XDEBUG_IDEKEY} \
     $HTTPD_ENV \
-    httpd -f ${ABS_ROOT}/etc/httpd.conf -DFOREGROUND | perl ./etc/apache-logfilter.pl
+    $APACHE -f ${ABS_ROOT}/etc/httpd.conf -DFOREGROUND | perl ./etc/apache-logfilter.pl
 done
