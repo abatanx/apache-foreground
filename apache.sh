@@ -7,6 +7,7 @@
 # brew install php@8.0
 # pecl install xdebug
 # ========================================================
+export PGGSSENCMODE="disable"
 
 # ========================================================
 cd $(dirname $0)
