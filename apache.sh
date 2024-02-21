@@ -19,6 +19,24 @@ ABS_ROOT=$(pwd)
 APACHE_PID_FILE=${ABS_ROOT}/httpd.pid
 APACHE_SIGWINCH=${ABS_ROOT}/__sig_winch__
 # ========================================================
+
+# ====== REBOOT? =======
+if [ -f "${APACHE_PID_FILE}" ]
+then
+	PID=$(cat ${APACHE_PID_FILE})
+	echo "httpd (pid ${PID}) already running"
+	echo -n "Reboot?(y/N) "
+	read REBOOT
+
+	if [ "${REBOOT}" = "y" ]
+	then
+		./apache-stop.sh
+	else
+		exit 0
+	fi
+fi
+# ====== /REBOOT? =======
+
 HTTPD_ENV=""
 if [ "$XDEBUG" = "3" ]; then
   HTTPD_ENV="XDEBUG_MODE=debug"
