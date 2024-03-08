@@ -37,6 +37,24 @@ then
 fi
 # ====== /REBOOT? =======
 
+# ====== SSL Check ======
+ABS_SSL_CERT=""
+ABS_SSL_CHAIN=""
+ABS_SSL_KEY=""
+if [ "${SERVER_SSL}" = "On" ]
+then
+  ABS_CERT_ROOT=$( cd "${SSL_PATH}" && pwd )
+  if [ -f "${ABS_CERT_ROOT}/${SSL_CERT}" -a -f "${ABS_CERT_ROOT}/${SSL_CHAIN}" -a -f "${ABS_CERT_ROOT}/${SSL_FULLCHAIN}" -a -f "${ABS_CERT_ROOT}/${SSL_KEY}" ]
+    then
+    ABS_SSL_CERT=${ABS_CERT_ROOT}/${SSL_CERT}
+    ABS_SSL_CHAIN=${ABS_CERT_ROOT}/${SSL_CHAIN}
+    ABS_SSL_KEY=${ABS_CERT_ROOT}/${SSL_KEY}
+  else
+    SERVER_SSL=Off
+  fi
+fi
+# ====== /SSL Check ======
+
 HTTPD_ENV=""
 if [ "$XDEBUG" = "3" ]; then
   HTTPD_ENV="XDEBUG_MODE=debug"
@@ -74,6 +92,11 @@ while [ -f $APACHE_SIGWINCH ]; do
   echo "APACHE_DOCUMENT_ROOT   = ${ABS_DOCUMENT_ROOT}"
   echo "APACHE_SCRIPT_ROOT     = ${ABS_ROOT}"
   echo "APACHE_PID_FILE        = ${APACHE_PID_FILE}"
+  if [ "${SERVER_SSL}" = "On" ] ; then
+    echo "SSL_CERT               = ${ABS_SSL_CERT}"
+    echo "SSL_CHAIN              = ${ABS_SSL_CHAIN}"
+    echo "SSL_KEY                = ${ABS_SSL_KEY}"
+  fi
   echo "PHP_MODULE_PATH        = ${PHP_MODULE_PATH}"
   echo "PHP_APACHE_MODULE_KEY  = ${PHP_APACHE_MODULE_KEY}"
   echo "XDEBUG                 = ${XDEBUG}"
@@ -91,6 +114,10 @@ while [ -f $APACHE_SIGWINCH ]; do
     APACHE_DOCUMENT_ROOT=${ABS_DOCUMENT_ROOT} \
     APACHE_SCRIPT_ROOT=${ABS_ROOT} \
     APACHE_PID_FILE=${APACHE_PID_FILE} \
+    USE_SSL=${SERVER_SSL} \
+    SSL_CERT=${ABS_SSL_CERT} \
+    SSL_CHAIN=${ABS_SSL_CHAIN} \
+    SSL_KEY=${ABS_SSL_KEY} \
     PHP_MODULE_PATH=${PHP_MODULE_PATH} \
     PHP_APACHE_MODULE_KEY=${PHP_APACHE_MODULE_KEY} \
     XDEBUG=${XDEBUG} \

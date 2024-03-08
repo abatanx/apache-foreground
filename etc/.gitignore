@@ -1,2 +1,4 @@
 /httpd-vhost-include.conf
 /httpd-directory-include.conf
+/*.pem
+!/sample_ssl.*.pem
