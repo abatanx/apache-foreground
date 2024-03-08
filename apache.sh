@@ -53,6 +53,7 @@ then
     VHOSTS_CONF="httpd-ssl-vhosts.conf"
   else
     SERVER_SSL=Off
+    echo "SSL設定に必要なファイルが足りません"
   fi
 fi
 # ====== /SSL Check ======
