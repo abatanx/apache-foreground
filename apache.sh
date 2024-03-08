@@ -41,14 +41,16 @@ fi
 ABS_SSL_CERT=""
 ABS_SSL_CHAIN=""
 ABS_SSL_KEY=""
+VHOSTS_CONF="httpd-vhosts.conf"
 if [ "${SERVER_SSL}" = "On" ]
 then
   ABS_CERT_ROOT=$( cd "${SSL_PATH}" && pwd )
-  if [ -f "${ABS_CERT_ROOT}/${SSL_CERT}" -a -f "${ABS_CERT_ROOT}/${SSL_CHAIN}" -a -f "${ABS_CERT_ROOT}/${SSL_FULLCHAIN}" -a -f "${ABS_CERT_ROOT}/${SSL_KEY}" ]
+  if [ -f "${ABS_CERT_ROOT}/${SSL_CERT}" -a -f "${ABS_CERT_ROOT}/${SSL_CHAIN}" -a -f "${ABS_CERT_ROOT}/${SSL_KEY}" ]
     then
     ABS_SSL_CERT=${ABS_CERT_ROOT}/${SSL_CERT}
     ABS_SSL_CHAIN=${ABS_CERT_ROOT}/${SSL_CHAIN}
     ABS_SSL_KEY=${ABS_CERT_ROOT}/${SSL_KEY}
+    VHOSTS_CONF="httpd-ssl-vhosts.conf"
   else
     SERVER_SSL=Off
   fi
@@ -118,6 +120,7 @@ while [ -f $APACHE_SIGWINCH ]; do
     SSL_CERT=${ABS_SSL_CERT} \
     SSL_CHAIN=${ABS_SSL_CHAIN} \
     SSL_KEY=${ABS_SSL_KEY} \
+    APACHE_VHOSTS_CONF=${VHOSTS_CONF} \
     PHP_MODULE_PATH=${PHP_MODULE_PATH} \
     PHP_APACHE_MODULE_KEY=${PHP_APACHE_MODULE_KEY} \
     XDEBUG=${XDEBUG} \
